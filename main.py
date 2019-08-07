@@ -8,8 +8,8 @@ IMG_SIZE = 500
 
 
 imagesDict = [
-    {"img": "ecuador01.jpeg", "style": "g1.jpg", "iters": "100"},
-    {"img": "ecuador03.jpeg", "style": "g5.jpg", "iters": "75"}
+    {"img": "ecuador01.jpeg", "style": "g1.jpg", "iters": "50"},
+    {"img": "ecuador03.jpeg", "style": "g5.jpg", "iters": "50"}
 ]
 
 
@@ -28,10 +28,12 @@ for (i, params) in enumerate(imagesDict):
         "--max_size", str(IMG_SIZE),
         "--max_iterations", params["iters"],
         "--device", "/cpu:0",
-        # "--verbose",
+        "--verbose",
         "--original_colors"
     ]
     alert = "**************  [Running image {}/{} ({})] **************"
+    print("-" * 100)
     print(alert.format(str(i + 1), str(imgsN), params["img"]))
+    print("-" * 100)
     p = subprocess.Popen(cmd)
     p.wait()

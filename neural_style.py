@@ -1,10 +1,10 @@
 import tensorflow as tf
-import numpy as np 
-import scipy.io  
-import argparse 
+import numpy as np
+import scipy.io
+import argparse
 import struct
 import errno
-import time                       
+import time
 import cv2
 import os
 
@@ -13,25 +13,25 @@ import os
 '''
 def parse_args():
 
-  desc = "TensorFlow implementation of 'A Neural Algorithm for Artistic Style'"  
+  desc = "TensorFlow implementation of 'A Neural Algorithm for Artistic Style'"
   parser = argparse.ArgumentParser(description=desc)
 
   # options for single image
   parser.add_argument('--verbose', action='store_true',
     help='Boolean flag indicating if statements should be printed to the console.')
 
-  parser.add_argument('--img_name', type=str, 
+  parser.add_argument('--img_name', type=str,
     default='result',
     help='Filename of the output image.')
 
   parser.add_argument('--style_imgs', nargs='+', type=str,
-    help='Filenames of the style images (example: starry-night.jpg)', 
+    help='Filenames of the style images (example: starry-night.jpg)',
     required=True)
-  
+
   parser.add_argument('--style_imgs_weights', nargs='+', type=float,
     default=[1.0],
     help='Interpolation weights of each of the style images. (example: 0.5 0.5)')
-  
+
   parser.add_argument('--content_img', type=str,
     help='Filename of the content image (example: lion.jpg)')
 
@@ -42,29 +42,29 @@ def parse_args():
   parser.add_argument('--content_img_dir', type=str,
     default='./image_input',
     help='Directory path to the content image. (default: %(default)s)')
-  
-  parser.add_argument('--init_img_type', type=str, 
+
+  parser.add_argument('--init_img_type', type=str,
     default='content',
-    choices=['random', 'content', 'style'], 
+    choices=['random', 'content', 'style'],
     help='Image used to initialize the network. (default: %(default)s)')
-  
-  parser.add_argument('--max_size', type=int, 
+
+  parser.add_argument('--max_size', type=int,
     default=512,
     help='Maximum width or height of the input images. (default: %(default)s)')
-  
-  parser.add_argument('--content_weight', type=float, 
+
+  parser.add_argument('--content_weight', type=float,
     default=5e0,
     help='Weight for the content loss function. (default: %(default)s)')
-  
-  parser.add_argument('--style_weight', type=float, 
+
+  parser.add_argument('--style_weight', type=float,
     default=1e4,
     help='Weight for the style loss function. (default: %(default)s)')
-  
-  parser.add_argument('--tv_weight', type=float, 
+
+  parser.add_argument('--tv_weight', type=float,
     default=1e-3,
     help='Weight for the total variational loss function. Set small (e.g. 1e-3). (default: %(default)s)')
 
-  parser.add_argument('--temporal_weight', type=float, 
+  parser.add_argument('--temporal_weight', type=float,
     default=2e2,
     help='Weight for the temporal loss function. (default: %(default)s)')
 
@@ -72,23 +72,23 @@ def parse_args():
     default=1,
     choices=[1, 2, 3],
     help='Different constants for the content layer loss function. (default: %(default)s)')
-  
-  parser.add_argument('--content_layers', nargs='+', type=str, 
+
+  parser.add_argument('--content_layers', nargs='+', type=str,
     default=['conv4_2'],
     help='VGG19 layers used for the content image. (default: %(default)s)')
-  
+
   parser.add_argument('--style_layers', nargs='+', type=str,
     default=['relu1_1', 'relu2_1', 'relu3_1', 'relu4_1', 'relu5_1'],
     help='VGG19 layers used for the style image. (default: %(default)s)')
-  
-  parser.add_argument('--content_layer_weights', nargs='+', type=float, 
-    default=[1.0], 
+
+  parser.add_argument('--content_layer_weights', nargs='+', type=float,
+    default=[1.0],
     help='Contributions (weights) of each content layer to loss. (default: %(default)s)')
-  
-  parser.add_argument('--style_layer_weights', nargs='+', type=float, 
+
+  parser.add_argument('--style_layer_weights', nargs='+', type=float,
     default=[0.2, 0.2, 0.2, 0.2, 0.2],
     help='Contributions (weights) of each style layer to loss. (default: %(default)s)')
-    
+
   parser.add_argument('--original_colors', action='store_true',
     help='Transfer the style but not the colors.')
 
@@ -105,109 +105,109 @@ def parse_args():
   parser.add_argument('--style_mask', action='store_true',
     help='Transfer the style to masked regions.')
 
-  parser.add_argument('--style_mask_imgs', nargs='+', type=str, 
+  parser.add_argument('--style_mask_imgs', nargs='+', type=str,
     default=None,
     help='Filenames of the style mask images (example: face_mask.png) (default: %(default)s)')
-  
-  parser.add_argument('--noise_ratio', type=float, 
-    default=1.0, 
+
+  parser.add_argument('--noise_ratio', type=float,
+    default=1.0,
     help="Interpolation value between the content image and noise image if the network is initialized with 'random'.")
 
-  parser.add_argument('--seed', type=int, 
+  parser.add_argument('--seed', type=int,
     default=0,
     help='Seed for the random number generator. (default: %(default)s)')
-  
-  parser.add_argument('--model_weights', type=str, 
+
+  parser.add_argument('--model_weights', type=str,
     default='imagenet-vgg-verydeep-19.mat',
     help='Weights and biases of the VGG-19 network.')
-  
+
   parser.add_argument('--pooling_type', type=str,
     default='avg',
     choices=['avg', 'max'],
     help='Type of pooling in convolutional neural network. (default: %(default)s)')
-  
-  parser.add_argument('--device', type=str, 
+
+  parser.add_argument('--device', type=str,
     default='/gpu:0',
     choices=['/gpu:0', '/cpu:0'],
     help='GPU or CPU mode.  GPU mode requires NVIDIA CUDA. (default|recommended: %(default)s)')
-  
-  parser.add_argument('--img_output_dir', type=str, 
+
+  parser.add_argument('--img_output_dir', type=str,
     default='./image_output',
     help='Relative or absolute directory path to output image and data.')
-  
+
   # optimizations
-  parser.add_argument('--optimizer', type=str, 
+  parser.add_argument('--optimizer', type=str,
     default='lbfgs',
     choices=['lbfgs', 'adam'],
     help='Loss minimization optimizer.  L-BFGS gives better results.  Adam uses less memory. (default|recommended: %(default)s)')
-  
-  parser.add_argument('--learning_rate', type=float, 
-    default=1e0, 
+
+  parser.add_argument('--learning_rate', type=float,
+    default=1e0,
     help='Learning rate parameter for the Adam optimizer. (default: %(default)s)')
-  
-  parser.add_argument('--max_iterations', type=int, 
+
+  parser.add_argument('--max_iterations', type=int,
     default=1000,
     help='Max number of iterations for the Adam or L-BFGS optimizer. (default: %(default)s)')
 
-  parser.add_argument('--print_iterations', type=int, 
+  parser.add_argument('--print_iterations', type=int,
     default=50,
     help='Number of iterations between optimizer print statements. (default: %(default)s)')
-  
+
   # options for video frames
-  parser.add_argument('--video', action='store_true', 
+  parser.add_argument('--video', action='store_true',
     help='Boolean flag indicating if the user is generating a video.')
 
-  parser.add_argument('--start_frame', type=int, 
+  parser.add_argument('--start_frame', type=int,
     default=1,
     help='First frame number.')
-  
-  parser.add_argument('--end_frame', type=int, 
+
+  parser.add_argument('--end_frame', type=int,
     default=1,
     help='Last frame number.')
-  
+
   parser.add_argument('--first_frame_type', type=str,
-    choices=['random', 'content', 'style'], 
+    choices=['random', 'content', 'style'],
     default='content',
     help='Image used to initialize the network during the rendering of the first frame.')
-  
-  parser.add_argument('--init_frame_type', type=str, 
-    choices=['prev_warped', 'prev', 'random', 'content', 'style'], 
+
+  parser.add_argument('--init_frame_type', type=str,
+    choices=['prev_warped', 'prev', 'random', 'content', 'style'],
     default='prev_warped',
     help='Image used to initialize the network during the every rendering after the first frame.')
-  
-  parser.add_argument('--video_input_dir', type=str, 
+
+  parser.add_argument('--video_input_dir', type=str,
     default='./video_input',
     help='Relative or absolute directory path to input frames.')
-  
-  parser.add_argument('--video_output_dir', type=str, 
+
+  parser.add_argument('--video_output_dir', type=str,
     default='./video_output',
     help='Relative or absolute directory path to output frames.')
-  
-  parser.add_argument('--content_frame_frmt', type=str, 
+
+  parser.add_argument('--content_frame_frmt', type=str,
     default='frame_{}.ppm',
     help='Filename format of the input content frames.')
-  
-  parser.add_argument('--backward_optical_flow_frmt', type=str, 
+
+  parser.add_argument('--backward_optical_flow_frmt', type=str,
     default='backward_{}_{}.flo',
     help='Filename format of the backward optical flow files.')
-  
-  parser.add_argument('--forward_optical_flow_frmt', type=str, 
+
+  parser.add_argument('--forward_optical_flow_frmt', type=str,
     default='forward_{}_{}.flo',
     help='Filename format of the forward optical flow files')
-  
-  parser.add_argument('--content_weights_frmt', type=str, 
+
+  parser.add_argument('--content_weights_frmt', type=str,
     default='reliable_{}_{}.txt',
     help='Filename format of the optical flow consistency files.')
-  
-  parser.add_argument('--prev_frame_indices', nargs='+', type=int, 
+
+  parser.add_argument('--prev_frame_indices', nargs='+', type=int,
     default=[1],
     help='Previous frames to consider for longterm temporal consistency.')
 
-  parser.add_argument('--first_frame_iterations', type=int, 
+  parser.add_argument('--first_frame_iterations', type=int,
     default=2000,
     help='Maximum number of optimizer iterations of the first frame. (default: %(default)s)')
-  
-  parser.add_argument('--frame_iterations', type=int, 
+
+  parser.add_argument('--frame_iterations', type=int,
     default=800,
     help='Maximum number of optimizer iterations for each frame after the first frame. (default: %(default)s)')
 
@@ -235,7 +235,7 @@ def build_model(input_img):
   if args.verbose: print('\nBUILDING VGG-19 NETWORK')
   net = {}
   _, h, w, d     = input_img.shape
-  
+
   if args.verbose: print('loading model weights...')
   vgg_rawnet     = scipy.io.loadmat(args.model_weights)
   vgg_layers     = vgg_rawnet['layers'][0]
@@ -248,18 +248,18 @@ def build_model(input_img):
 
   net['conv1_2'] = conv_layer('conv1_2', net['relu1_1'], W=get_weights(vgg_layers, 2))
   net['relu1_2'] = relu_layer('relu1_2', net['conv1_2'], b=get_bias(vgg_layers, 2))
-  
+
   net['pool1']   = pool_layer('pool1', net['relu1_2'])
 
-  if args.verbose: print('LAYER GROUP 2')  
+  if args.verbose: print('LAYER GROUP 2')
   net['conv2_1'] = conv_layer('conv2_1', net['pool1'], W=get_weights(vgg_layers, 5))
   net['relu2_1'] = relu_layer('relu2_1', net['conv2_1'], b=get_bias(vgg_layers, 5))
-  
+
   net['conv2_2'] = conv_layer('conv2_2', net['relu2_1'], W=get_weights(vgg_layers, 7))
   net['relu2_2'] = relu_layer('relu2_2', net['conv2_2'], b=get_bias(vgg_layers, 7))
-  
+
   net['pool2']   = pool_layer('pool2', net['relu2_2'])
-  
+
   if args.verbose: print('LAYER GROUP 3')
   net['conv3_1'] = conv_layer('conv3_1', net['pool2'], W=get_weights(vgg_layers, 10))
   net['relu3_1'] = relu_layer('relu3_1', net['conv3_1'], b=get_bias(vgg_layers, 10))
@@ -309,25 +309,25 @@ def build_model(input_img):
 
 def conv_layer(layer_name, layer_input, W):
   conv = tf.nn.conv2d(layer_input, W, strides=[1, 1, 1, 1], padding='SAME')
-  if args.verbose: print('--{} | shape={} | weights_shape={}'.format(layer_name, 
+  if args.verbose: print('--{} | shape={} | weights_shape={}'.format(layer_name,
     conv.get_shape(), W.get_shape()))
   return conv
 
 def relu_layer(layer_name, layer_input, b):
   relu = tf.nn.relu(layer_input + b)
-  if args.verbose: 
-    print('--{} | shape={} | bias_shape={}'.format(layer_name, relu.get_shape(), 
+  if args.verbose:
+    print('--{} | shape={} | bias_shape={}'.format(layer_name, relu.get_shape(),
       b.get_shape()))
   return relu
 
 def pool_layer(layer_name, layer_input):
   if args.pooling_type == 'avg':
-    pool = tf.nn.avg_pool(layer_input, ksize=[1, 2, 2, 1], 
+    pool = tf.nn.avg_pool(layer_input, ksize=[1, 2, 2, 1],
       strides=[1, 2, 2, 1], padding='SAME')
   elif args.pooling_type == 'max':
-    pool = tf.nn.max_pool(layer_input, ksize=[1, 2, 2, 1], 
+    pool = tf.nn.max_pool(layer_input, ksize=[1, 2, 2, 1],
       strides=[1, 2, 2, 1], padding='SAME')
-  if args.verbose: 
+  if args.verbose:
     print('--{}   | shape={}'.format(layer_name, pool.get_shape()))
   return pool
 
@@ -352,7 +352,7 @@ def content_layer_loss(p, x):
     K = 1. / (2. * N**0.5 * M**0.5)
   elif args.content_loss_function == 2:
     K = 1. / (N * M)
-  elif args.content_loss_function == 3:  
+  elif args.content_loss_function == 3:
     K = 1. / 2.
   loss = K * tf.reduce_sum(tf.pow((x - p), 2))
   return loss
@@ -376,7 +376,7 @@ def mask_style_layer(a, x, mask_img):
   mask = get_mask_image(mask_img, w.value, h.value)
   mask = tf.convert_to_tensor(mask)
   tensors = []
-  for _ in range(d.value): 
+  for _ in range(d.value):
     tensors.append(mask)
   mask = tf.stack(tensors, axis=2)
   mask = tf.stack(mask, axis=0)
@@ -505,9 +505,9 @@ def read_flow_file(path):
   with open(path, 'rb') as f:
     # 4 bytes header
     header = struct.unpack('4s', f.read(4))[0]
-    # 4 bytes width, height    
+    # 4 bytes width, height
     w = struct.unpack('i', f.read(4))[0]
-    h = struct.unpack('i', f.read(4))[0]   
+    h = struct.unpack('i', f.read(4))[0]
     flow = np.ndarray((2, h, w), dtype=np.float32)
     for y in range(h):
       for x in range(w):
@@ -536,7 +536,7 @@ def normalize(weights):
   else: return [0.] * len(weights)
 
 def maybe_make_directory(dir_path):
-  if not os.path.exists(dir_path):  
+  if not os.path.exists(dir_path):
     os.makedirs(dir_path)
 
 def check_image(img, path):
@@ -550,29 +550,29 @@ def stylize(content_img, style_imgs, init_img, frame=None):
   with tf.device(args.device), tf.Session() as sess:
     # setup network
     net = build_model(content_img)
-    
+
     # style loss
     if args.style_mask:
       L_style = sum_masked_style_losses(sess, net, style_imgs)
     else:
       L_style = sum_style_losses(sess, net, style_imgs)
-    
+
     # content loss
     L_content = sum_content_losses(sess, net, content_img)
-    
+
     # denoising loss
     L_tv = tf.image.total_variation(net['input'])
-    
+
     # loss weights
     alpha = args.content_weight
     beta  = args.style_weight
     theta = args.tv_weight
-    
+
     # total loss
     L_total  = alpha * L_content
     L_total += beta  * L_style
     L_total += theta * L_tv
-    
+
     # video temporal loss
     if args.video and frame > 1:
       gamma      = args.temporal_weight
@@ -586,9 +586,9 @@ def stylize(content_img, style_imgs, init_img, frame=None):
       minimize_with_adam(sess, net, optimizer, init_img, L_total)
     elif args.optimizer == 'lbfgs':
       minimize_with_lbfgs(sess, net, optimizer, init_img)
-    
+
     output_img = sess.run(net['input'])
-    
+
     if args.original_colors:
       output_img = convert_to_original_colors(np.copy(content_img), output_img)
 
@@ -649,7 +649,7 @@ def write_image_output(output_img, content_img, style_imgs, init_img):
     path = os.path.join(out_dir, 'style_'+str(index)+'.png')
     write_image(path, style_img)
     index += 1
-  
+
   # save the configuration settings
   out_file = os.path.join(out_dir, 'meta_data.txt')
   f = open(out_file, 'w')
@@ -786,7 +786,7 @@ def warp_image(src, flow):
     flow_map[0,:,x] = float(x) + flow[0,:,x]
   # remap pixels to optical flow
   dst = cv2.remap(
-    src, flow_map[0], flow_map[1], 
+    src, flow_map[0], flow_map[1],
     interpolation=cv2.INTER_CUBIC, borderMode=cv2.BORDER_TRANSPARENT)
   return dst
 

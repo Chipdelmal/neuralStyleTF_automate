@@ -1,4 +1,6 @@
 import subprocess
+import warnings
+warnings.filterwarnings("ignore")
 
 PATH = "/Users/sanchez.hmsc/Documents/GitHub/neuralStyleTF_automate/"
 PATH_OUT = PATH + "image_output/"
@@ -10,7 +12,9 @@ imagesDict = [
     {"img": "ecuador03.jpeg", "style": "g5.jpg", "iters": "75"}
 ]
 
-for params in imagesDict:
+
+imgsN= len(imagesDict)
+for (i, params) in enumerate(imagesDict):
     # Create output folder
     (imgN, styN) = (params["img"].split(".")[0], params["style"].split(".")[0])
     outFolder = PATH_OUT + imgN + "_" + styN
@@ -24,7 +28,10 @@ for params in imagesDict:
         "--max_size", str(IMG_SIZE),
         "--max_iterations", params["iters"],
         "--device", "/cpu:0",
-        "--verbose",
+        # "--verbose",
         "--original_colors"
     ]
-    subprocess.Popen(cmd)
+    alert = "**************  [Running image {}/{} ({})] **************"
+    print(alert.format(str(i + 1), str(imgsN), params["img"]))
+    p = subprocess.Popen(cmd)
+    p.wait()

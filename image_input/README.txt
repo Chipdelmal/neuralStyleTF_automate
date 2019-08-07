@@ -1,0 +1,1 @@
+Save your input images in this folder!

@@ -1,2 +1,3 @@
 # neuralStyleTF_automate
- These scripts automate the running of: https://github.com/cysmith/neural-style-tf
+
+Needs a valid installation of the [neural-style-tf](https://github.com/cysmith/neural-style-tf) package!

@@ -25,9 +25,9 @@ pip install opencv-python
 
 Additionally, [neural-style-tf](https://github.com/cysmith/neural-style-tf) requires a copy of the [VGG-19 model weights ](http://www.vlfeat.org/matconvnet/models/imagenet-vgg-verydeep-19.mat) to be stored in the same directory as the [neural_style.py](https://github.com/Chipdelmal/neuralStyleTF_automate/blob/master/neural_style.py) script (the main directory of this repository).
 
-##  Disclaimers
+##  Disclaimer
 
-The [neural_style.py](https://github.com/Chipdelmal/neuralStyleTF_automate/blob/master/neural_style.py) script was coded by the authors of the [neural-style-tf](https://github.com/cysmith/neural-style-tf) package. This repository acts as a wrapper around it, so that stylizing several images is easier.
+The [neural_style.py](https://github.com/Chipdelmal/neuralStyleTF_automate/blob/master/neural_style.py) script was coded by the authors of the [neural-style-tf](https://github.com/cysmith/neural-style-tf) package. This repository acts as a wrapper around it, so that batch-stylizing images is easier.
 
 <hr>
 

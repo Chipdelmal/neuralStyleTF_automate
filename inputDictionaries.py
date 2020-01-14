@@ -9,7 +9,7 @@ imgEcuador = [
 ]
 
 
-iterations = 500
+iterations = 2000
 imgGremlin= [
     {"img": "gremlin.jpg", "style": "t_2.jpg", "iters": str(iterations)},
     {"img": "gremlin.jpg", "style": "t_3.jpg", "iters": str(iterations)},
@@ -23,11 +23,22 @@ imgGremlin= [
 ]
 
 
-iterations = 300
-styAbril = ["g4.jpg", "g1.jpg", "g5.jpg", "g3.jpg", "flowers.png", "g6.jpg"]
-imgAbril = [{
-        "img": "abril.jpg",
+iterations = 5000
+styYoshi = [
+    "t01.jpg", "t_11.jpg", "02.jpg", "03.jpg", "04.jpg"
+]
+imgYoshi = [{
+        "img": "yoshiBike.png",
         "iters": str(iterations),
         "style": i
-    } for i in styAbril
+    } for i in styYoshi
+]
+
+
+iterations = 2000
+imgLogo = [
+    {"img": "mgBio.png", "style":"circuit.jpg", "iters":str(iterations)},
+    {"img": "mgBio.png", "style":"circuit2.jpg", "iters":str(iterations)},
+    {"img": "mgd00.png", "style":"circuit.jpg", "iters":str(iterations)},
+    {"img": "mgd00.png", "style":"circuit2.jpg", "iters":str(iterations)}
 ]

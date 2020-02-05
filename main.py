@@ -16,7 +16,6 @@ import subprocess
 
 # Get styles paths
 stylesPaths = aux.getFilesWithExt(PATH_STY)
-stylesPaths
 
 # Automation part
 imgsN = len(stylesPaths)

@@ -39,9 +39,9 @@ for (i, imgSty) in enumerate(stylesPaths):
     ]
     # Print state
     alert = "* [Running image {}/{} ({})]"
-    print("*" * 100)
+    print("*" * 150)
     print(alert.format(str(i + 1), str(imgsN), outFolder))
-    print("-" * 100)
+    print("*" * 150)
     # Run command and wait until it finishes
     p = subprocess.Popen(cmd)
     p.wait()

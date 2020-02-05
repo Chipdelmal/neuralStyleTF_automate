@@ -3,10 +3,8 @@
 
 import os
 import aux
-import warnings
 import subprocess
-warnings.simplefilter(action='ignore', category=FutureWarning)
-warnings.resetwarnings()
+
 
 # Setup simulation parameters and paths
 (IMG_SIZE, iterations) = (2000, 7500)

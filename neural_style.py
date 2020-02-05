@@ -8,6 +8,7 @@ import time
 import cv2
 import os
 
+
 '''
   parsing and configuration
 '''

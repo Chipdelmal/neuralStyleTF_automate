@@ -1,47 +1,49 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import subprocess
+import os
+import aux
 import warnings
-import inputDictionaries as inDict
-warnings.filterwarnings("ignore")
+import subprocess
+warnings.simplefilter(action='ignore', category=FutureWarning)
+warnings.resetwarnings()
 
-(IMG_SIZE, SET) = (2000, 2)
-PATH = "/Volumes/marshallShare/temp/nnTransfer/styles//"
-PATH_OUT = PATH + "image_output/"
+# Setup simulation parameters and paths
+(IMG_SIZE, iterations) = (2000, 7500)
+(PATH_STY, PATH_OUT, PATH_IMG) = (
+        '/Volumes/marshallShare/temp/nnTransfer/styles/',
+        '/Volumes/marshallShare/temp/nnTransfer/out/',
+        '/Volumes/marshallShare/temp/nnTransfer/yoshiSide.png'
+    )
 
-if SET == 1:
-    imagesDict = inDict.imgEcuador
-elif SET == 2:
-    imagesDict = inDict.imgYoshi
-elif SET == 3:
-    imagesDict = inDict.imgGremlin
-elif SET == 4:
-    imagesDict = inDict.imgLogo
+# Get styles paths
+stylesPaths = aux.getFilesWithExt(PATH_STY)
+stylesPaths
 
 # Automation part
-imgsN = len(imagesDict)
-for (i, params) in enumerate(imagesDict):
+imgsN = len(stylesPaths)
+imgName = os.path.splitext(os.path.basename(PATH_IMG))[0]
+for (i, imgSty) in enumerate(stylesPaths):
     # Create output folder
-    (imgN, styN) = (params["img"].split(".")[0], params["style"].split(".")[0])
-    outFolder = PATH_OUT + "" + imgN + "-" + "" + styN
+    styName = os.path.splitext(os.path.basename(imgSty))[0]
+    outFolder = PATH_OUT + "" + imgName + "-" + "" + styName
     subprocess.Popen(['mkdir', outFolder])
     # Generate bash command
     cmd = [
         "python", "neural_style.py",
-        "--content_img", params["img"],
-        "--style_imgs", params["style"],
+        "--content_img", PATH_IMG,
+        "--style_imgs", imgSty,
         "--img_output_dir", outFolder,
         "--max_size", str(IMG_SIZE),
-        "--max_iterations", params["iters"],
-        "--device", "/cpu:0"#,
+        "--max_iterations", str(iterations),
+        "--device", "/cpu:0"
         # "--original_colors"
         # "--verbose"
     ]
     # Print state
     alert = "* [Running image {}/{} ({})]"
-    print("-" * 100)
-    print(alert.format(str(i + 1), str(imgsN), params["img"]))
+    print("*" * 100)
+    print(alert.format(str(i + 1), str(imgsN), outFolder))
     print("-" * 100)
     # Run command and wait until it finishes
     p = subprocess.Popen(cmd)

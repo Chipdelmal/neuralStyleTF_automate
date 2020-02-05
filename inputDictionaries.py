@@ -1,3 +1,5 @@
+import glob
+
 # Styles dictionary!
 imgEcuador = [
     {"img": "ecuador00.jpg", "style": "g4.jpg", "iters": "30"},
@@ -22,13 +24,19 @@ imgGremlin= [
     {"img": "gremlin.jpg", "style": "t_13.jpg", "iters": str(iterations)}
 ]
 
-
-iterations = 5000
-styYoshi = [
-    "t01.jpg", "t_11.jpg", "02.jpg", "03.jpg", "04.jpg"
-]
+styYoshi = glob.glob("/Users/sanchez.hmsc/Documents/GitHub/neuralStyleTF_automate/styles/*.jpg")
+styYoshi2 = glob.glob("/Users/sanchez.hmsc/Documents/GitHub/neuralStyleTF_automate/styles/*.png")
+styYoshi.extend(styYoshi2)
+styYoshi = [i.split('/')[-1] for i in styYoshi]
+iterations = 7500
+# styYoshi = [
+#     "t_22.jpg", "t_2.jpg", "t_3.jpg", "t_8.jpg", "t_5.jpg", "t_6.jpg",
+#     "t_10.jpg", "t_11.jpg", "t_13.jpg", "t_15.jpg", "t_16.jpg", "t_17.jpg",
+#     "t_19.jpg", "t_21.jpg", "t_22.jpg", "t_24.jpg", "starry-night.jpg",
+#     #"t04.jpg", "t03.jpg", "t35.jpg", "t_27.jpg", "t_21.jpg"
+# ]
 imgYoshi = [{
-        "img": "yoshiBike.png",
+        "img": "yoshiSide.png",
         "iters": str(iterations),
         "style": i
     } for i in styYoshi

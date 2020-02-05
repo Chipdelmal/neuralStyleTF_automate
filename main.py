@@ -7,7 +7,7 @@ import inputDictionaries as inDict
 warnings.filterwarnings("ignore")
 
 (IMG_SIZE, SET) = (2000, 2)
-PATH = "/Users/sanchez.hmsc/Documents/GitHub/neuralStyleTF_automate/"
+PATH = "/Volumes/marshallShare/temp/nnTransfer/styles//"
 PATH_OUT = PATH + "image_output/"
 
 if SET == 1:

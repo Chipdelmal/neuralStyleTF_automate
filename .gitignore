@@ -1,7 +1,4 @@
 # Media
-*.jpeg
-*.jpg
-*.png
 meta_data.txt
 
 # Byte-compiled / optimized / DLL files

@@ -12,6 +12,13 @@ To run the script simply call the following comand on the terminal:
 python main.py IMG_PATH STYLES_FOLDER OUT_PATH IMG_SIZE ITERATIONS_NUMBER
 ```
 
+For example:
+
+```bash
+python main.py ./image_input/yoshi.png ./styles/ ./image_output/ 500 500
+```
+
+
 ##  Dependencies
 
 Needs the installation of [tensorflow](https://www.tensorflow.org/install/pip) and [opencv](https://pypi.org/project/opencv-python/):

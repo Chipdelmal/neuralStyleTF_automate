@@ -1,5 +1,6 @@
 # Media
 meta_data.txt
+.DS_Store
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

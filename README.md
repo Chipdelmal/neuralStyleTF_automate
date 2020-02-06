@@ -1,18 +1,16 @@
 # neuralStyleTF_automate
 
-This repository provides a wrapper for the [neural-style-tf](https://github.com/cysmith/neural-style-tf) package. It automates running images with different styles/parameters over the art-style-transfer routine.
+This repository provides a wrapper for the [neural-style-tf](https://github.com/cysmith/neural-style-tf) package. It automates running images with different styles over the art-style-transfer routine.
 
 <hr>
 
 ##  Instructions
 
-For now, the script requires changing paths and images names directly on the [main](https://github.com/Chipdelmal/neuralStyleTF_automate/blob/master/main.py). Once everything is in good shape, just run:
+To run the script simply call the following comand on the terminal:
 
 ```bash
-python main.py
+python main.py IMG_PATH STYLES_FOLDER OUT_PATH IMG_SIZE ITERATIONS_NUMBER
 ```
-
-Will try to make it more streamlined in the future if there's time for it.
 
 ##  Dependencies
 
@@ -30,5 +28,9 @@ Additionally, [neural-style-tf](https://github.com/cysmith/neural-style-tf) requ
 The [neural_style.py](https://github.com/Chipdelmal/neuralStyleTF_automate/blob/master/neural_style.py) script was coded by the authors of the [neural-style-tf](https://github.com/cysmith/neural-style-tf) package. This repository acts as a wrapper around it, so that batch-stylizing images is easier.
 
 <hr>
+
+# Author
+
+<img src="./media/yoshi.png" height="250px" align="middle"><br>
 
 [Héctor Manuel Sánchez Castellanos](https://chipdelmal.github.io/)

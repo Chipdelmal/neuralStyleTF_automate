@@ -3,16 +3,19 @@
 
 import os
 import aux
+import sys
 import subprocess
 
 
 # Setup simulation parameters and paths
-(IMG_SIZE, iterations) = (2000, 7500)
-(PATH_STY, PATH_OUT, PATH_IMG) = (
-        '/Volumes/marshallShare/temp/nnTransfer/styles/',
-        '/Volumes/marshallShare/temp/nnTransfer/out/',
-        '/Volumes/marshallShare/temp/nnTransfer/yoshiSide.png'
-    )
+# (IMG_SIZE, iterations) = (2000, 7500)
+# (PATH_STY, PATH_OUT, PATH_IMG) = (
+#         '/Volumes/marshallShare/temp/nnTransfer/styles/',
+#         '/Volumes/marshallShare/temp/nnTransfer/out/',
+#         '/Volumes/marshallShare/temp/nnTransfer/yoshiSide.png'
+#     )
+(PATH_IMG, PATH_STY, PATH_OUT) = (sys.argv[1], sys.argv[2], sys.argv[3])
+(IMG_SIZE, iterations) = (sys.argv[4], sys.argv[5])
 
 # Get styles paths
 stylesPaths = aux.getFilesWithExt(PATH_STY)
@@ -27,16 +30,16 @@ for (i, imgSty) in enumerate(stylesPaths):
     subprocess.Popen(['mkdir', outFolder])
     # Generate bash command
     cmd = [
-        "python", "neural_style.py",
-        "--content_img", PATH_IMG,
-        "--style_imgs", imgSty,
-        "--img_output_dir", outFolder,
-        "--max_size", str(IMG_SIZE),
-        "--max_iterations", str(iterations),
-        "--device", "/cpu:0"
-        # "--original_colors"
-        # "--verbose"
-    ]
+            "python", "neural_style.py",
+            "--content_img", PATH_IMG,
+            "--style_imgs", imgSty,
+            "--img_output_dir", outFolder,
+            "--max_size", str(IMG_SIZE),
+            "--max_iterations", str(iterations),
+            "--device", "/cpu:0"
+            # "--original_colors"
+            # "--verbose"
+        ]
     # Print state
     alert = "* [Running image {}/{} ({})]"
     print("*" * 150)

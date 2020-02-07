@@ -15,7 +15,7 @@ python main.py IMG_PATH STYLES_FOLDER OUT_PATH IMG_SIZE ITERATIONS_NUMBER
 For example:
 
 ```bash
-python main.py ./image_input/yoshi.png ./styles/ ./image_output/ 500 500
+python main.py ./image_input/yoshi.png ./styles/ ./image_output/ 500 1000
 ```
 
 

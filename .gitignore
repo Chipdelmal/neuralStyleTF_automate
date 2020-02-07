@@ -129,3 +129,4 @@ dmypy.json
 .pyre/
 imagenet-vgg-verydeep-19.mat
 tests.txt
+.DS_Store

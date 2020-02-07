@@ -1,8 +1,6 @@
 # Media
-*.jpeg
-*.jpg
-*.png
 meta_data.txt
+*.DS_Store
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -104,9 +102,7 @@ celerybeat-schedule
 # Environments
 .env
 .venv
-env/
 venv/
-ENV/
 env.bak/
 venv.bak/
 

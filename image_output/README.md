@@ -1,1 +1,3 @@
-Your output will be exported here.
+# neuralStyleTF_automate
+
+Your output will be exported here by default.

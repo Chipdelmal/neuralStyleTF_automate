@@ -1,1 +1,4 @@
-This folder contains the anaconda environment for the package!
+
+To create the environment, run:
+
+`conda env create -f deepStyle.yml`
